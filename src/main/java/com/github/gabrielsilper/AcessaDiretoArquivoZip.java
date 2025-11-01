@@ -1,6 +1,6 @@
-package com.github.gabrielsilper.cep_project;
+package com.github.gabrielsilper;
 
-import com.github.gabrielsilper.daos.CEPDao;
+import com.github.gabrielsilper.daos.CepDAO;
 import com.github.gabrielsilper.db.DatabaseConnection;
 import com.github.gabrielsilper.models.CEP;
 import com.google.gson.Gson;
@@ -18,7 +18,7 @@ public class AcessaDiretoArquivoZip {
         String zipFilePath = "json-ceps.zip";
         String folder = "json-ceps/";
         Gson gson = new Gson();
-        CEPDao cepDao = new CEPDao();
+        CepDAO cepDao = new CepDAO();
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             connection.setAutoCommit(false);

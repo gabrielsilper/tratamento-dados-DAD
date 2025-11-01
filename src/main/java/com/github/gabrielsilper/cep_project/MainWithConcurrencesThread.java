@@ -1,6 +1,6 @@
 package com.github.gabrielsilper.cep_project;
 
-import com.github.gabrielsilper.daos.CEPDao;
+import com.github.gabrielsilper.daos.CepDAO;
 import com.github.gabrielsilper.db.DatabaseConnection;
 import com.github.gabrielsilper.models.CEP;
 import com.github.gabrielsilper.utils.JsonCepReader;
@@ -22,7 +22,7 @@ public class MainWithConcurrencesThread {
 
         JsonCepReader cepJsonReader = new JsonCepReader();
         Connection con = DatabaseConnection.getConnection();
-        CEPDao cepDao = new CEPDao();
+        CepDAO cepDao = new CepDAO();
         File dir = new File("json-ceps");
         File[] jsons = dir.listFiles();
 

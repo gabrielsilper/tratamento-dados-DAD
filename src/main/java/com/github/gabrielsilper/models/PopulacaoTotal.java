@@ -1,15 +1,15 @@
 package com.github.gabrielsilper.models;
 
-public class Populacao {
+public class PopulacaoTotal {
     private String municipio;
     private String populacaoMasc;
     private String populacaoFem;
 
-    public Populacao(){
+    public PopulacaoTotal(){
 
     }
 
-    public Populacao(String municipio, String populacaoMasc, String populacaoFem) {
+    public PopulacaoTotal(String municipio, String populacaoMasc, String populacaoFem) {
         this.municipio = municipio;
         this.populacaoMasc = populacaoMasc;
         this.populacaoFem = populacaoFem;

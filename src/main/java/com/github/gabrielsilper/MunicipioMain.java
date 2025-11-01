@@ -1,10 +1,8 @@
-package com.github.gabrielsilper.populacao_project;
+package com.github.gabrielsilper;
 
 import com.github.gabrielsilper.daos.MunicipioDAO;
-import com.github.gabrielsilper.daos.PopulacaoDAO;
 import com.github.gabrielsilper.db.DatabaseConnection;
 import com.github.gabrielsilper.models.Municipio;
-import com.github.gabrielsilper.models.Populacao;
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 
@@ -12,10 +10,10 @@ import java.io.*;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-public class PopulacaoMain {
+public class MunicipioMain {
     public static void main(String[] args) {
-        String caminho = "/home/gasp/gabriel-dev/java/json-cep-reader/populacao.csv";
-        PopulacaoDAO populacaoDAO = new PopulacaoDAO();
+        String caminho = "/home/gasp/gabriel-dev/java/json-cep-reader/municipios.csv";
+        MunicipioDAO municipioDAO = new MunicipioDAO();
 
         try (Connection connection = DatabaseConnection.getConnection()) {
             connection.setAutoCommit(false);
@@ -27,15 +25,15 @@ public class PopulacaoMain {
                         primeiraLinha = false;
                         continue;
                     }
-                    String codigoMunicipio = linha[0];
-                    String QtdMasc = linha[3];
-                    String QtdFem = linha[4];
+                    String uf = linha[0];
+                    String codigoMunicipio = linha[2];
+                    String nomeMunicipio = linha[3];
 
-                    Populacao populacao = new Populacao(codigoMunicipio, QtdMasc, QtdFem);
-                    populacaoDAO.insert(connection, populacao);
+                    Municipio municipio = new Municipio(codigoMunicipio, uf, nomeMunicipio);
+                    municipioDAO.insert(connection, municipio);
                     connection.commit();
                 }
-                System.out.println("Populações importadas.");
+                System.out.println("Municípios importados.");
             } catch (IOException | CsvValidationException e) {
                 throw new RuntimeException(e);
             } finally {

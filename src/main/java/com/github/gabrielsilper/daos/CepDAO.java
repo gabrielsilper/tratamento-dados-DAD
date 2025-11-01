@@ -7,7 +7,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
-public class CEPDao {
+public class CepDAO {
 
     public void addCEP(Connection con, CEP cep){
         String sql = "INSERT INTO ceps " +
