@@ -12,7 +12,7 @@ import java.sql.SQLException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class AcessaDiretoArquivoZip {
+public class CepMain {
     public static void main(String[] args) {
         // Arquivo que baixei do OpenCEP -> https://github.com/SeuAliado/OpenCEP/releases/
         String zipFilePath = "json-ceps.zip";

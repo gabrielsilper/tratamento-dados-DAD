@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.util.List;
 
 public class CepDAO {
-
     public void addCEP(Connection con, CEP cep){
         String sql = "INSERT INTO ceps " +
                 " (cep, logradouro, complemento, bairro, localidade, uf, ibge) " +

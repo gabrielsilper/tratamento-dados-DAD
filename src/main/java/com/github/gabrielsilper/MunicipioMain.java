@@ -12,7 +12,7 @@ import java.sql.SQLException;
 
 public class MunicipioMain {
     public static void main(String[] args) {
-        String caminho = "/home/gasp/gabriel-dev/java/json-cep-reader/municipios.csv";
+        String caminho = "/home/gasp/gabriel-dev/java/tratamento-dados-DAD/municipios.csv";
         MunicipioDAO municipioDAO = new MunicipioDAO();
 
         try (Connection connection = DatabaseConnection.getConnection()) {
