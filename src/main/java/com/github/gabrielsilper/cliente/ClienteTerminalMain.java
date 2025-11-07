@@ -10,14 +10,13 @@ public class ClienteTerminalMain {
         System.out.println("Conectando ao serviço SOAP em http://localhost:8080/servico/consultas?wsdl ...");
 
         URL wsdlURL = new URL("http://localhost:8080/servico/consultas?wsdl");
-
         QName serviceQName = new QName("http://service.gabrielsilper.github.com/", "ConsultaDadosServiceImplService");
         QName portQName = new QName("http://service.gabrielsilper.github.com/", "ConsultaDadosServiceImplPort");
-
         ConsultaDadosServiceImplService serviceFactory = new ConsultaDadosServiceImplService(wsdlURL, serviceQName);
-
         IConsultaDadosService servico = serviceFactory.getPort(portQName, IConsultaDadosService.class);
 
+
+        // --- INTERAÇÃO COM O USUÁRIO ---
 
         System.out.println("==================================================");
         System.out.println("Cliente conectado com sucesso!");
@@ -29,7 +28,7 @@ public class ClienteTerminalMain {
         System.out.print("Digite o Município (ex: Manaus): ");
         String municipio = scanner.nextLine();
 
-        // 3. Chamar a TAREFA 1
+        // --- TAREFA 1 ---
         System.out.println("\nBuscando dados da Tarefa 1 (População)...");
         DadosPopulacaoDTO pop = servico.getDadosPopulacao(uf, municipio);
 
@@ -39,7 +38,6 @@ public class ClienteTerminalMain {
             System.out.println("População Geral: " + pop.getPopulacaoGeral());
             System.out.println("Homens: " + pop.getPopulacaoMasculina());
             System.out.println("Mulheres: " + pop.getPopulacaoFeminina());
-            // Métodos corrigidos (getFaixa0A10, etc.)
             System.out.println("Faixa 0-10: " + pop.getFaixa0A10());
             System.out.println("Faixa 11-20: " + pop.getFaixa11A20());
             System.out.println("Faixa 21-30: " + pop.getFaixa21A30());
@@ -47,7 +45,7 @@ public class ClienteTerminalMain {
             System.out.println("Faixa 41+: " + pop.getFaixa41Mais());
         }
 
-        // 4. Chamar a TAREFA 2
+        // --- TAREFA 2 ---
         System.out.println("\nBuscando dados da Tarefa 2 (Saúde)...");
         DadosSaudeDTO saude = servico.getDadosSaude(uf, municipio);
 
@@ -58,31 +56,51 @@ public class ClienteTerminalMain {
             System.out.println("Médicos: " + saude.getQuantidadeMedicos());
             System.out.println("Enfermeiros: " + saude.getQuantidadeEnfermeiros());
 
-            System.out.println("--- Lista de UBS ---");
-            if (saude.getListaUBS() != null) {
+            // --- TAREFA 3 (INTEGRADA COM TAREFA 2) ---
+
+            System.out.println("\n--- Iniciando Validação de Endereços das UBS (Tarefa 3) ---");
+
+            if (saude.getListaUBS() != null && !saude.getListaUBS().isEmpty()) {
+                // loop em cada UBS encontrada na Tarefa 2
                 for (EstbalecimentosSaude ubs : saude.getListaUBS()) {
-                    System.out.println("Nome: " + ubs.getNome() + ", End: " + ubs.getLogradouro() + ", CEP: " + ubs.getCep());
+                    System.out.println("\n========================================");
+                    System.out.println("UBS: " + ubs.getNome());
+                    System.out.println("Endereço (do Banco): " + ubs.getLogradouro() + ", " + ubs.getBairro() + " (CEP: " + ubs.getCep() + ")");
+
+                    // Pega o CEP da UBS atual
+                    String cepParaValidar = ubs.getCep();
+
+                    // Validar  CEP
+                    if (cepParaValidar == null || cepParaValidar.trim().isEmpty()) {
+                        System.out.println("Validação (ViaCEP): CEP não cadastrado no banco para esta UBS.");
+                        continue; // Pula para a próxima UBS
+                    }
+
+                    // Chama a Tarefa 3 para este CEP
+                    System.out.println("...Validando CEP " + cepParaValidar + " no ViaCEP...");
+                    Cep cepInfo = servico.validarEnderecoCEP(cepParaValidar);
+
+                    // resultado da validação
+                    if (cepInfo != null && cepInfo.getCep() != null) {
+                        System.out.println("Endereço (ViaCEP): " + cepInfo.getLogradouro() + ", " + cepInfo.getBairro() + ", " + cepInfo.getLocalidade() + "/" + cepInfo.getUf());
+
+                        //Compara o logradouro do banco com o do ViaCEP
+                        if (ubs.getLogradouro() != null && !ubs.getLogradouro().equalsIgnoreCase(cepInfo.getLogradouro()) && !cepInfo.getLogradouro().isEmpty()) {
+                            System.out.println("!! ALERTA: Logradouro do banco de dados (" + ubs.getLogradouro() + ") é diferente do ViaCEP (" + cepInfo.getLogradouro() + ").");
+                        } else {
+                            System.out.println("Info: Endereço parece consistente.");
+                        }
+                    } else {
+                        System.out.println("Validação (ViaCEP): CEP " + cepParaValidar + " não foi encontrado na base do ViaCEP.");
+                    }
                 }
+                System.out.println("========================================");
+                System.out.println("Fim da validação de UBSs.");
+
             } else {
-                System.out.println("Nenhuma UBS encontrada.");
+                System.out.println("Nenhuma UBS encontrada neste município para validar.");
             }
         }
-
-        // 5. Chamar a TAREFA 3
-        System.out.println("\nTestando Tarefa 3 (ViaCEP)...");
-        System.out.print("Digite um CEP para validar (ex: 01001-000): ");
-        String cep = scanner.nextLine();
-
-
-        Cep cepInfo = servico.validarEnderecoCEP(cep);
-
-
-        if (cepInfo != null && cepInfo.getCep() != null) {
-            System.out.println("CEP Encontrado: " + cepInfo.getCep() + " - " + cepInfo.getLogradouro() + ", " + cepInfo.getBairro() + ", " + cepInfo.getLocalidade() + "/" + cepInfo.getUf());
-        } else {
-            System.out.println("CEP não encontrado.");
-        }
-
         scanner.close();
     }
 }

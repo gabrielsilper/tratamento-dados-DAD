@@ -58,7 +58,7 @@ public class ConsultaDadosServiceImpl implements IConsultaDadosService {
                 long fem = safeParseLong(popTotal.getPopulacaoFem());
                 resposta.setPopulacaoMasculina(masc);
                 resposta.setPopulacaoFeminina(fem);
-                resposta.setPopulacaoGeral(masc + fem); // Conforme OBS do professor [cite: 29]
+                resposta.setPopulacaoGeral(masc + fem); // Conforme OBS do professor
             }
 
             // 3. Buscar População por Faixa Etária
