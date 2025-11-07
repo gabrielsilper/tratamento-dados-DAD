@@ -5,6 +5,7 @@ import com.github.gabrielsilper.models.PopulacaoTotal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PopulacaoIdadeDAO {
@@ -24,5 +25,25 @@ public class PopulacaoIdadeDAO {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public PopulacaoPorFaixaEtaria findByMunicipio(Connection con, String codigoIbge) throws SQLException {
+        String sql = "SELECT * FROM populacao_faixa_etaria WHERE municipio = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codigoIbge);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    PopulacaoPorFaixaEtaria popIdade = new PopulacaoPorFaixaEtaria();
+                    popIdade.setMunicipio(rs.getString("municipio"));
+                    popIdade.setPopulacao0A10(rs.getString("populacao_0_10"));
+                    popIdade.setPopulacao11A20(rs.getString("populacao_11_20"));
+                    popIdade.setPopulacao21A30(rs.getString("populacao_21_30"));
+                    popIdade.setPopulacao31A40(rs.getString("populacao_31_40"));
+                    popIdade.setPopulacao41Mais(rs.getString("populacao_41_mais"));
+                    return popIdade;
+                }
+            }
+        }
+        return null; // Retorna null se não encontrar
     }
 }

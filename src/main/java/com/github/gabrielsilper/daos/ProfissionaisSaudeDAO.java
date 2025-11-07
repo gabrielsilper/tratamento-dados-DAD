@@ -4,6 +4,7 @@ import com.github.gabrielsilper.models.ProfissionaisSaude;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class ProfissionaisSaudeDAO {
@@ -33,5 +34,22 @@ public class ProfissionaisSaudeDAO {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public ProfissionaisSaude findByMunicipio(Connection con, String codigoIbge) throws SQLException {
+        String sql = "SELECT * FROM profissionais_saude WHERE municipio = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codigoIbge);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    ProfissionaisSaude prof = new ProfissionaisSaude();
+                    prof.setMunicipio(rs.getString("municipio"));
+                    prof.setQuantidadeMedicos(rs.getInt("quantidade_medicos"));
+                    prof.setQuantidadeEnfermeiros(rs.getInt("quantidade_enfermeiros"));
+                    return prof;
+                }
+            }
+        }
+        return null; // Retorna null se não encontrar
     }
 }

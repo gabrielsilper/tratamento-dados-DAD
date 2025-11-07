@@ -4,6 +4,7 @@ import com.github.gabrielsilper.models.PopulacaoTotal;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class PopulacaoDAO {
@@ -20,5 +21,22 @@ public class PopulacaoDAO {
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
+    }
+
+    public PopulacaoTotal findByMunicipio(Connection con, String codigoIbge) throws SQLException {
+        String sql = "SELECT * FROM populacao_total WHERE municipio = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codigoIbge);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    PopulacaoTotal pop = new PopulacaoTotal();
+                    pop.setMunicipio(rs.getString("municipio"));
+                    pop.setPopulacaoMasc(rs.getString("populacao_masc"));
+                    pop.setPopulacaoFem(rs.getString("populacao_fem"));
+                    return pop;
+                }
+            }
+        }
+        return null; // Retorna null se não encontrar
     }
 }

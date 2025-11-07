@@ -53,4 +53,27 @@ public class EstabelecimentosSaudeDAO {
             ps.executeUpdate();
         }
     }
+
+    public java.util.List<EstbalecimentosSaude> findByMunicipio(Connection con, String codigoIbge) throws SQLException {
+        java.util.List<EstbalecimentosSaude> lista = new java.util.ArrayList<>();
+        String sql = "SELECT * FROM estabelecimentos_de_saude WHERE municipio = ?";
+        try (PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setString(1, codigoIbge);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    EstbalecimentosSaude estab = new EstbalecimentosSaude();
+                    estab.setMunicipio(rs.getString("municipio"));
+                    estab.setNome(rs.getString("nome"));
+                    estab.setLogradouro(rs.getString("logradouro"));
+                    estab.setBairro(rs.getString("bairro"));
+                    estab.setLatitude(rs.getString("latitude"));
+                    estab.setLongitude(rs.getString("longitude"));
+                    estab.setCep(rs.getString("cep"));
+                    lista.add(estab);
+                }
+            }
+        }
+        return lista; // Retorna lista (vazia se não encontrar)
+    }
+
 }

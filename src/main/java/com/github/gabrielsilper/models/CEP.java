@@ -7,9 +7,42 @@ public class CEP {
     private String logradouro;
     private String complemento;
     private String bairro;
+
+    public void setCep(String cep) {
+        this.cep = cep;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public void setComplemento(String complemento) {
+        this.complemento = complemento;
+    }
+
+    public void setLocalidade(String localidade) {
+        this.localidade = localidade;
+    }
+
+    public void setUf(String uf) {
+        this.uf = uf;
+    }
+
+    public void setIbge(String ibge) {
+        this.ibge = ibge;
+    }
+
     private String localidade;
     private String uf;
     private String ibge;
+
+    public CEP() {
+
+    }
 
     public String getCep() {
         return cep;
